@@ -117,6 +117,8 @@ class MetricstoreController extends BaseJSONController {
                     ress << it.resourceType.appdefType + ":" + it.instanceId
                 }
               lress = resourceGroupManager.getMembers(resourceGroupManager.getResourceGroupByResource(res));
+			  ress << eid.toString();
+			  lress << res;
             } else {
               ress = [eid.toString()];
               lress = [res];
