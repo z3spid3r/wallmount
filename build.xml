@@ -43,7 +43,7 @@
             <arg line="copyTests=false"/>
             <arg line="mini=false"/>
             <arg line="version=${version}"/>
-            <arg line="optimize=shrinksafe"/>
+            <arg line="optimize=shrinksafe.keepLines"/>
             <arg line="cssOptimize=comments.keepLines"/>
     	</java>
     </target>

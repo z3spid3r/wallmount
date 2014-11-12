@@ -32,9 +32,11 @@ dojo.require("hyperic.util.FontUtil");
 dojo.require("hyperic.data.EmptyFullColorProperty");
 dojo.require("hyperic.data.RangesProperty");
 dojo.require("hyperic.data.RangeProperty");
+dojo.require("hyperic.data.LabelProperty");
 
 dojo.declare("hyperic.widget.Tank",
     [ hyperic.widget.base.MetricItem,
+      hyperic.data.LabelProperty,
       hyperic.data.EmptyFullColorProperty,
       hyperic.data.RangesProperty,
       hyperic.data.RangeProperty ],{
@@ -50,6 +52,7 @@ dojo.declare("hyperic.widget.Tank",
             ambient: {color: "white", intensity: 2},
             specular: "white"
     	};
+    	this.labelColor = "whitesmoke";
     },
 
     startup: function(){
@@ -139,8 +142,10 @@ dojo.declare("hyperic.widget.Tank",
     	view.render();
     	
     	if(this.isValueStateOk()) {
-            var fV = hyperic.unit.UnitsConvert.convert(this.value, this.format, {places:'0,2'});
-            var fS = hyperic.util.FontUtil.findGoodSizeFontByRect(fV, this.width-(this.width/10), this.height/10);
+            //*ORIGINAL* var fV = hyperic.unit.UnitsConvert.convert(this.value, this.format, {places:'0,2'});
+            var fV = hyperic.unit.UnitsConvert.convert(this.value, this.format, {pattern:this.getLabelFormat()});
+            //*ORIGINAL* var fS = hyperic.util.FontUtil.findGoodSizeFontByRect(fV, this.width-(this.width/10), this.height/10);
+            var fS = hyperic.util.FontUtil.findGoodSizeFontByRect(fV, this.width-(this.width/10), this.height-(this.height/10));
         	
         	var valPos;
         	if (this.value < min){
@@ -152,7 +157,8 @@ dojo.declare("hyperic.widget.Tank",
         	} else {
                 valPos = this.height - _y2;
         	}
-            this.drawText(fV, this.width/2, valPos , "middle", "whitesmoke", {family:"Helvetica",weight:"bold",size:fS+'px'});    		
+            //*ORIGINAL* this.drawText(fV, this.width/2, valPos , "middle", "whitesmoke", {family:"Helvetica",weight:"bold",size:fS+'px'});    		
+        	this.drawText(fV, this.width/2, valPos , "middle", this.getLabelColor(), {family:"Helvetica",weight:"bold",size:fS+'px'});
     	}
 
         this.handleOverlay();    
@@ -162,6 +168,8 @@ dojo.declare("hyperic.widget.Tank",
         // summary:
         //     Returns component parameters as object.
         var paramObj = this.inherited(arguments);
+        paramObj['labelColor'] = this.getLabelColor();
+        paramObj['labelFormat'] = this.getLabelFormat();
         paramObj['emptyColor'] = this.getEmptyColor();
         paramObj['fullColor'] = this.getFullColor();
         paramObj['lowRange'] = this.getLowRange();

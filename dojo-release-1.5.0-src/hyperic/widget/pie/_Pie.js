@@ -154,6 +154,7 @@ dojo.require("dojox.charting.Theme");
             //     Returns component parameters as object.
             var paramObj = this.inherited(arguments);
             paramObj['labelColor'] = this.getLabelColor();
+            paramObj['labelFormat'] = this.getLabelFormat();
             return paramObj;
         }
 

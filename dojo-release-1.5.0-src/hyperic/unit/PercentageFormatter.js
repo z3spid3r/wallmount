@@ -32,8 +32,8 @@ dojo.require("dojo.number");
 dojo.declare("hyperic.unit.PercentageFormatter",
     [ hyperic.unit.SimpleFormatter ],{
         
-    formatNumber: function(/*Number*/rawValue, f){
-        return f(rawValue * this.getMultiplier(),{}) + '%';
+    formatNumber: function(/*Number*/rawValue, f, /*Object*/format, /*String*/locale){
+        return f(rawValue * this.getMultiplier(), format) + '%';
     },
     
     getMultiplier: function(){

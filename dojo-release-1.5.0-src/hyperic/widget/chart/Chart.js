@@ -244,6 +244,7 @@ dojo.require("dojox.charting.Theme");
             paramObj['chartColors'] = this.getChartColors();
             paramObj['chartTimeScale'] = this.getChartTimeScale();
             paramObj['labelColor'] = this.getLabelColor();
+            paramObj['labelFormat'] = this.getLabelFormat();
             return paramObj;
         }
 

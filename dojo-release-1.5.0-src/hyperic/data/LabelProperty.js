@@ -29,11 +29,16 @@ dojo.provide("hyperic.data.LabelProperty");
 dojo.declare("hyperic.data.LabelProperty",null,{
 
     constructor: function(){
-    	this.labelColor = "#808080"; 
+    	this.labelColor = "#808080";
+    	this.labelFormat = "#";
     },
     
     getLabelColor: function(){
     	return this.labelColor;
+    },
+    
+    getLabelFormat: function(){
+    	return this.labelFormat;
     }
 
 });

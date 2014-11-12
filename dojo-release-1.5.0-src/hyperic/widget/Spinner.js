@@ -33,6 +33,7 @@ dojo.require("hyperic.unit.UnitsConvert");
 dojo.require("hyperic.data.ArrowProperty");
 dojo.require("hyperic.data.RangeSpeedProperty");
 dojo.require("hyperic.data.RangesProperty");
+dojo.require("hyperic.data.LabelProperty");
 
 // TODO: linear vs. logarithmic speed
 // TODO: counterclockwise
@@ -41,6 +42,7 @@ dojo.declare("hyperic.widget.Spinner",
     [ hyperic.widget.base.MetricItem,
       hyperic.widget.base._Animatable,
       hyperic.data.ArrowProperty,
+      hyperic.data.LabelProperty,
       hyperic.data.RangeSpeedProperty,
       hyperic.data.RangesProperty ],{
     // summary:
@@ -299,7 +301,7 @@ dojo.declare("hyperic.widget.Spinner",
     	
     	var fV;
     	if(this.isValueStateOk())
-    		fV = hyperic.unit.UnitsConvert.convert(this.value, this.format, {places:'0,2'});
+    		fV = hyperic.unit.UnitsConvert.convert(this.value, this.format, {pattern:this.getLabelFormat()});
     	else
     		fV = "---";
     		
@@ -374,7 +376,10 @@ dojo.declare("hyperic.widget.Spinner",
         paramObj['minRange'] = this.getMinRange();        
         paramObj['maxRange'] = this.getMaxRange();        
         paramObj['speedTime'] = this.getSpeedTime();
-        paramObj['ranges'] = this.asRangesParams();    
+        paramObj['ranges'] = this.asRangesParams();   
+        paramObj['labelColor'] = this.getLabelColor();
+        paramObj['labelFormat'] = this.getLabelFormat();
+
         return paramObj;
     }
 

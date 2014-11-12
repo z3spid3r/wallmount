@@ -31,8 +31,8 @@ dojo.require("hyperic.unit.SimpleFormatter");
 dojo.declare("hyperic.unit.NoFormatter",
     [ hyperic.unit.SimpleFormatter ],{
     	
-    formatNumber: function(/*Number*/rawValue, f){
-    	return f(rawValue,{});
+    formatNumber: function(/*Number*/rawValue, f, /*Object*/format, /*String*/locale){
+    	return f(rawValue, format);
     },
 
     parseValue: function(/*String*/rawValue, f){

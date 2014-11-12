@@ -33,8 +33,8 @@ dojo.require("hyperic.unit.UnitsConstants");
 dojo.declare("hyperic.unit.SimpleFormatter",
     null,{
 
-    format: function(/*Object*/val) {
-        return this.formatNumber(val.value,this.getNumberFormat());
+    format: function(/*Object*/val, /*Object*/format, /*String*/locale) {
+        return this.formatNumber(val.value,this.getNumberFormat(), format, locale);
     },
       
     getNumberFormat: function() {

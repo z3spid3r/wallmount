@@ -93,7 +93,7 @@ dojo.declare("hyperic.widget.VerticalArrowPipe",
     
     _drawAxis: function(height){
     	if(this.isValueStateOk()) {    		
-            var sVal = hyperic.unit.UnitsConvert.convert(this.value, this.format, {places:'0,2'});
+            var sVal = hyperic.unit.UnitsConvert.convert(this.value, this.format, {pattern:this.getLabelFormat()});
         
             var fMax = hyperic.util.FontUtil.findGoodSizeFontByRect(sVal, this.width, height);
             if(this._text) {

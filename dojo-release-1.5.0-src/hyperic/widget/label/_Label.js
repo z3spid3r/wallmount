@@ -48,7 +48,8 @@ dojo.declare("hyperic.widget.label._Label",
         
     	var fV;
     	if(this.isValueStateOk())
-            fV = hyperic.unit.UnitsConvert.convert(this.value, this.format, {places:'0,2'});        
+            //*ORIGINAL* fV = hyperic.unit.UnitsConvert.convert(this.value, this.format, {places:'0,2'});
+    		fV = hyperic.unit.UnitsConvert.convert(this.value, this.format, {pattern:this.getLabelFormat()});        
     	else
     		fV = "---";
         
@@ -76,6 +77,7 @@ dojo.declare("hyperic.widget.label._Label",
         
         var paramObj = this.inherited(arguments);
         paramObj['labelColor'] = this.getLabelColor();
+        paramObj['labelFormat'] = this.getLabelFormat();
         paramObj['ranges'] = this.asRangesParams();
         return paramObj;
     }

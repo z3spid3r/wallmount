@@ -223,6 +223,7 @@ dojo.declare("hyperic.widget.arrowpipe._ArrowPipe",
         paramObj['reverse'] = this.reverse;    
         paramObj['ranges'] = this.asRangesParams();    
         paramObj['labelColor'] = this.getLabelColor();
+        paramObj['labelFormat'] = this.getLabelFormat();
         return paramObj;
     }
         

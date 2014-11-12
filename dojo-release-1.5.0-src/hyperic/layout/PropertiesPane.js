@@ -296,6 +296,7 @@ dojo.declare("hyperic.layout.PropertiesPane",
                 dojo.style(this.labelcolorbutton.containerNode, "backgroundColor", picker.value);
                 this._selected.labelColor = picker.value;            	
             }
+            this._selected.labelFormat = this.elementValue("labelformat")
         }
         if(this._selected.isInstanceOf(hyperic.data.RangeSpeedProperty)) {
             this._selected.minRangeObj.value = this.elementValue("minrange");
@@ -499,6 +500,9 @@ dojo.declare("hyperic.layout.PropertiesPane",
         picker.value = this._selected.getLabelColor();
         dojo.style(this.labelcolorbutton.containerNode, "color", this._selected.getLabelColor());
         dojo.style(this.labelcolorbutton.containerNode, "backgroundColor", this._selected.getLabelColor());
+
+        var format = dijit.byId(this.labelformat);
+        format.set('value', this._selected.getLabelFormat());
     },
     
     rangeSpeedProperty: function(){

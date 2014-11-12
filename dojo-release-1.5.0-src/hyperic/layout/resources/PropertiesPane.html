@@ -147,8 +147,12 @@
                         <span>Color</span>
                         <div id="${id}_labelcolor" name="labelcolor" dojoAttachPoint="labelcolor" dojoType="dijit.ColorPalette" id="colorPalette" style="display: none" palette="7x10"></div>
                     </button>
-                    
                 </p>
+                <p>
+                    <label class="propertytext">Format:</label>
+                    <input style="float:left;" id="${id}_labelformat" name="labelformat" dojoAttachPoint="labelformat" class="textbox" dojoType="dijit.form.TextBox" intermediateChanges="true" observer="handleValues"></input>
+                </p>
+                
             </fieldset>                
         </div>
 
