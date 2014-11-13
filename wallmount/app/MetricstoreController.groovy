@@ -32,6 +32,7 @@ import org.hyperic.hq.appdef.shared.AppdefEntityID
 import org.hyperic.hq.appdef.shared.AppdefEntityTypeID
 import org.hyperic.hq.events.AlertSeverity
 import org.hyperic.hq.events.server.session.AlertSortField
+import org.hyperic.hq.galerts.server.session.GalertLogSortField
 import org.hyperic.hibernate.PageInfo
 import org.hyperic.util.pager.PageControl
 import org.hyperic.hq.measurement.server.session.Measurement
@@ -71,6 +72,13 @@ class MetricstoreController extends BaseJSONController {
      */
     private static Object systemCacheLock = new Object()
     
+	/**
+	 * Supress the messages from the log "Invoking method: getMetrics with...."
+	 */
+	boolean logRequests() {
+		true
+	}
+
     /**
      * Returns requested metrics.
      */
@@ -117,19 +125,26 @@ class MetricstoreController extends BaseJSONController {
                     ress << it.resourceType.appdefType + ":" + it.instanceId
                 }
               lress = resourceGroupManager.getMembers(resourceGroupManager.getResourceGroupByResource(res));
-			  ress << eid.toString();
-			  lress << res;
             } else {
               ress = [eid.toString()];
               lress = [res];
             }
             def last = lress.collect { availabilityManager.getAvailMeasurement(it).lastDataPoint.value }.min()
-            
-            def resAlertCount = resourcesWithUnfixedAlerts()
+
+			// add the group to the lists of resources so its alerts and escalations will be counted
+			// can't add before because looks like the method "lastDataPoint" called above doesn't exist for groups           
+			if (eid.group) {
+				ress << eid.toString();
+				lress << res;
+  			}
+
+			log.info("ravail resources:"+ress)
+  
+			def resAlertCount = resourcesWithUnfixedAlerts() + groupsWithUnfixedAlerts()
             resAlertCount.keySet().retainAll(ress)
             def alertCount = resAlertCount.values().size() > 0 ? resAlertCount.values().sum() : 0
             
-            def resEscCount = resourcesWithRunningEscalation()
+            def resEscCount = resourcesWithRunningEscalation() + groupsWithRunningEscalation()
             resEscCount.keySet().retainAll(ress)
             def escCount = resEscCount.values().size() > 0 ? resEscCount.values().sum() : 0 
             
@@ -146,51 +161,51 @@ class MetricstoreController extends BaseJSONController {
             // get resources
             
             def resources = []
-            log.info("aeid:"+aeid)
-            log.info("within:"+within)
+            //log.info("aeid:"+aeid)
+            //log.info("within:"+within)
             def proto = resourceManager.findResourcePrototype(new AppdefEntityTypeID(aeid))
-            log.info("proto:"+proto)
+            //log.info("proto:"+proto)
             if(within == null) {
                 // we're in global mode
                 resources = resourceManager.findResourcesOfPrototype(proto, PageInfo.getAll(AlertSortField.RESOURCE, true))
-                log.info("resources1:"+resources)
+                //log.info("resources1:"+resources)
             } else {
                 def eid = new AppdefEntityID(within)
                 if(eid.isPlatform() && aeid.startsWith("3:")) {
                     def plat = resourceManager.findResource(eid)
-                    log.info("plat.id1:"+plat.id)
-                    log.info("plat.id2:"+eid.id)
+                    //log.info("plat.id1:"+plat.id)
+                    //log.info("plat.id2:"+eid.id)
                     def tId = new AppdefEntityTypeID(aeid).id
-                    log.info("tId:"+tId)
+                    //log.info("tId:"+tId)
                     
                     def serviceValues = serviceManager.getPlatformServices(user, eid.id, tId, PageControl.PAGE_ALL)
                     serviceValues.each{
                         resources << resourceManager.findResource(it.entityId)
                     }
-                    log.info("resources2:"+resources)
+                    //log.info("resources2:"+resources)
                 } else if(eid.isPlatform() && aeid.startsWith("2:")) {
                 
                     def tId = new AppdefEntityTypeID(aeid).id
-                    log.info("tId:"+tId)
+                    //log.info("tId:"+tId)
                     def serverValues = serverManager.getServersByPlatform(user, eid.id, tId, true, PageControl.PAGE_ALL)
                     serverValues.each{
                         resources << resourceManager.findResource(it.entityId)
                     }
-                    log.info("resources3:"+resources)
+                    //log.info("resources3:"+resources)
                     
                 } else if(eid.isServer() && aeid.startsWith("3:")) {
                     def tId = new AppdefEntityTypeID(aeid).id
-                    log.info("tId:"+tId)
+                    //log.info("tId:"+tId)
                     def serviceValues = serviceManager.getServicesByServer(user, eid.id,tId ,PageControl.PAGE_ALL)
-                    log.info("serviceValues:"+serviceValues)
+                    //log.info("serviceValues:"+serviceValues)
                     serviceValues.each{
                         resources << resourceManager.findResource(it.entityId)
                     }
-                    log.info("resources4:"+resources)
+                    //log.info("resources4:"+resources)
                 }
             }
             resources.each{
-                log.info("class:"+it.class)
+                //log.info("class:"+it.class)
             }
 
             // avails for resources
@@ -276,6 +291,32 @@ class MetricstoreController extends BaseJSONController {
     /**
      * 
      */
+    protected groupsWithUnfixedAlerts() {
+        
+		def grpAlertCount = [:]
+		def severity = AlertSeverity.findByCode(1)
+		def alerts = alertHelper.findGroupAlerts(
+				severity, 1232386080468, System.currentTimeMillis(),
+                false, true, null,
+                PageInfo.getAll(GalertLogSortField.DATE, true))
+        alerts.each{
+			def eid = "5:" + it.alertDef.group.id
+
+			//log.info("group with unfixed alert: " + eid) 
+            
+			if(grpAlertCount.containsKey(eid)) {
+                (grpAlertCount[eid])++
+            } else {
+                grpAlertCount[eid] = 1
+            }
+		}
+
+		grpAlertCount
+    }
+    
+    /**
+     * 
+     */
     protected resourcesWithRunningEscalation() {
         def resEscCount = [:]
         
@@ -285,6 +326,8 @@ class MetricstoreController extends BaseJSONController {
             def aDefId = it.alertDefinitionId
             def aDef = alertDefinitionManager.getByIdAndCheck(user, aDefId)
             def eid = aDef.appdefEntityId.toString()
+			
+			log.info("resource with running escalation: " + eid) 
             
             if(resEscCount.containsKey(eid)) {
                 (resEscCount[eid])++
@@ -297,6 +340,32 @@ class MetricstoreController extends BaseJSONController {
         resEscCount
     }
 
+    /**
+     * 
+     */
+    protected groupsWithRunningEscalation() {
+        
+		def grpEscCount = [:]
+		def severity = AlertSeverity.findByCode(1)
+		def alerts = alertHelper.findGroupAlerts(
+				severity, 1232386080468, System.currentTimeMillis(),
+                true, true, null,
+                PageInfo.getAll(GalertLogSortField.DATE, true))
+        alerts.each{
+			def eid = "5:" + it.alertDef.group.id
+
+			log.info("group with running escalation: " + eid) 
+            
+			if(grpEscCount.containsKey(eid)) {
+                (grpEscCount[eid])++
+            } else {
+                grpEscCount[eid] = 1
+            }
+		}
+
+		grpEscCount
+    }
+    
     /**
      * Returns a map of system statistics.
      */

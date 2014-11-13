@@ -3,7 +3,9 @@
 <project name="wallmount" default="dist" basedir=".">
 
     <property name="dist.dir" location="dist"/>
-    <property name="assemble.dir" location="assemble"/>
+
+	<property name="assemble.dir" location="C:/apps/hyperic/server-5.7.1/hq-engine/hq-server/webapps/ROOT/hqu/wmvisualizer"/>
+	<property name="zip.dir" location="C:/apps/hyperic/server-5.7.1/hq-engine/hq-server/webapps/ROOT/hqu"/>
     <property name="version" value="1.1.M1.PT1"/>
 	
     <property name="dojo.source.dir" location="dojo-release-1.5.0-src" />
@@ -25,7 +27,7 @@
     <target name="dist" depends="clean,assemble-wallmount,assemble-dojo">    
 	    <mkdir dir="${dist.dir}"/>
 		<zip file="${dist.dir}/hqu_wmvisualizer-${version}.zip">
-			<fileset dir="${assemble.dir}">
+			<fileset dir="${zip.dir}">
 				<include name="wmvisualizer/**"/>
 			</fileset>
 		</zip>
@@ -43,13 +45,14 @@
             <arg line="copyTests=false"/>
             <arg line="mini=false"/>
             <arg line="version=${version}"/>
-            <arg line="optimize=shrinksafe.keepLines"/>
-            <arg line="cssOptimize=comments.keepLines"/>
+            <arg line="optimize=0"/>
+            <arg line="cssOptimize=0"/>
+            <arg line="layerOptimize=0"/>
     	</java>
     </target>
 
     <target name="assemble-wallmount">
-        <copy todir="${assemble.dir}/wmvisualizer">
+        <copy todir="${assemble.dir}">
             <fileset dir="wallmount">
                 <include name="**"/>
             </fileset>
@@ -57,7 +60,7 @@
     </target>
 
     <target name="assemble-dojo" depends="build-dojo">
-    	<copy todir="${assemble.dir}/wmvisualizer/public/js">
+       	<copy todir="${assemble.dir}/public/js">
     		<fileset dir="${dojo.source.dir}/release/dojo">
                 <include name="**"/>
             </fileset>
@@ -65,17 +68,11 @@
     </target>
 
     <target name="build-expect-dojo-builded" depends="clean,assemble-wallmount">
-        <copy todir="${assemble.dir}/wmvisualizer/public/js">
+        <copy todir="${assemble.dir}/public/js">
             <fileset dir="${dojo.source.dir}/release/dojo">
                 <include name="**"/>
             </fileset>
         </copy>
-        <mkdir dir="${dist.dir}"/>
-        <zip file="${dist.dir}/hqu_wmvisualizer-${version}.zip">
-            <fileset dir="${assemble.dir}">
-                <include name="wmvisualizer/**"/>
-            </fileset>
-        </zip>
     </target>
 
 </project>
