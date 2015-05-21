@@ -4,7 +4,7 @@
 
     <property name="dist.dir" location="dist"/>
 
-	<property name="assemble.dir" location="C:/apps/hyperic/server-5.7.1/hq-engine/hq-server/webapps/ROOT/hqu/wmvisualizer"/>
+	<property name="assemble.dir" location="C:/apps/hyperic/server-5.8.4-EE/hq-engine/hq-server/webapps/ROOT/hqu/wmvisualizer"/>
 	<property name="zip.dir" location="C:/apps/hyperic/server-5.7.1/hq-engine/hq-server/webapps/ROOT/hqu"/>
     <property name="version" value="1.1.M1.PT1"/>
 	

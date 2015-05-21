@@ -290,6 +290,15 @@ hyperic.wallmount.LayoutUtil.getLayoutAsJSONObj = function() {
 	// XXX: this is a temporary hack
 	var themeName = hyperic.wallmount.LayoutUtil.getThemeName();
 	var ow = 6, oh = 4;
+	
+	// It seems that the adjustments w and h must be different:
+	//   subtract 2 from width (ow = 2, not 6)
+	//   subtract 2 from height (oh = 2, not 4)
+	// And adjustments to x and x are needed too:
+	//   subtract 1 from x (ox = 1)
+	//   subtract 1 from y (oy = 1)
+    var ow = 2, oh = 2, ox = 1, oy = 1;
+
 	if(themeName == "Matrix") {
 		ow = 24;
 		oh = 16;
@@ -305,8 +314,8 @@ hyperic.wallmount.LayoutUtil.getLayoutAsJSONObj = function() {
 		// TODO: check how to calculate offset accurately
 		windowSettings['w'] = wn.offsetWidth - ow;
         windowSettings['h'] = wn.offsetHeight - oh;
-        windowSettings['y'] = wn.offsetTop;
-        windowSettings['x'] = wn.offsetLeft;
+        windowSettings['y'] = wn.offsetTop - ox;
+        windowSettings['x'] = wn.offsetLeft - oy;
         windowSettings['title'] = dijit.byId(wn.id).title;
         
         // if we find table rows (tableRows is not empty list),

@@ -145,7 +145,7 @@ dojo.declare("hyperic.widget.Tank",
             //*ORIGINAL* var fV = hyperic.unit.UnitsConvert.convert(this.value, this.format, {places:'0,2'});
             var fV = hyperic.unit.UnitsConvert.convert(this.value, this.format, {pattern:this.getLabelFormat()});
             //*ORIGINAL* var fS = hyperic.util.FontUtil.findGoodSizeFontByRect(fV, this.width-(this.width/10), this.height/10);
-            var fS = hyperic.util.FontUtil.findGoodSizeFontByRect(fV, this.width-(this.width/10), this.height-(this.height/10));
+            var fS = hyperic.util.FontUtil.findGoodSizeFontByRect(fV, this.width*0.8, this.height*0.6);
         	
         	var valPos;
         	if (this.value < min){

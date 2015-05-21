@@ -76,7 +76,7 @@ class MetricstoreController extends BaseJSONController {
 	 * Supress the messages from the log "Invoking method: getMetrics with...."
 	 */
 	boolean logRequests() {
-		true
+		false
 	}
 
     /**
@@ -138,7 +138,7 @@ class MetricstoreController extends BaseJSONController {
 				lress << res;
   			}
 
-			log.info("ravail resources:"+ress)
+			//log.info("ravail resources:"+ress)
   
 			def resAlertCount = resourcesWithUnfixedAlerts() + groupsWithUnfixedAlerts()
             resAlertCount.keySet().retainAll(ress)
@@ -327,7 +327,7 @@ class MetricstoreController extends BaseJSONController {
             def aDef = alertDefinitionManager.getByIdAndCheck(user, aDefId)
             def eid = aDef.appdefEntityId.toString()
 			
-			log.info("resource with running escalation: " + eid) 
+			//log.info("resource with running escalation: " + eid) 
             
             if(resEscCount.containsKey(eid)) {
                 (resEscCount[eid])++
@@ -354,7 +354,7 @@ class MetricstoreController extends BaseJSONController {
         alerts.each{
 			def eid = "5:" + it.alertDef.group.id
 
-			log.info("group with running escalation: " + eid) 
+			//log.info("group with running escalation: " + eid) 
             
 			if(grpEscCount.containsKey(eid)) {
                 (grpEscCount[eid])++

@@ -59,6 +59,13 @@ class ImageController extends BaseWallmountController {
     private static BASE_IMAGE_PATH = "hqu/wmvisualizer/public/"
     private static IMAGE_ELLIPSE_BG_GREEN = BASE_IMAGE_PATH + "js/hyperic/widget/avail/resources/ok-ellipse.png"
         
+	/**
+	 * Supress the messages from the log "Invoking method: getScaledImage with...."
+	 */
+	boolean logRequests() {
+		false
+	}
+
     /**
      * Returns modified image.
      * 
