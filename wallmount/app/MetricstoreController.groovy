@@ -324,7 +324,9 @@ class MetricstoreController extends BaseJSONController {
         
         escStates.each{
             def aDefId = it.alertDefinitionId
-            def aDef = alertDefinitionManager.getByIdAndCheck(user, aDefId)
+            // dont check permissions - allows non-superusers to see the dashboards
+			//def aDef = alertDefinitionManager.getByIdAndCheck(user, aDefId)
+			def aDef = alertDefinitionManager.getByIdNoCheck(aDefId)
             def eid = aDef.appdefEntityId.toString()
 			
 			//log.info("resource with running escalation: " + eid) 
